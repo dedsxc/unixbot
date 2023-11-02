@@ -1,3 +1,2 @@
-tweepy
 praw
-pytz
+selenium

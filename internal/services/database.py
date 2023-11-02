@@ -1,6 +1,7 @@
 import sqlite3
 from common.logger import log
 
+
 class Database:
     def __init__(self, db_name):
         self.conn = sqlite3.connect(db_name)

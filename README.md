@@ -4,16 +4,19 @@
 
 Twitter bot to tweet about NIX* configuration from https://www.reddit.com/r/unixporn/
 
+## Dependencies
+
+Download Chrome-driver : https://github.com/electron/electron/releases
+
 ## Configuration
 
-|    Environment variable     |         Description         | Default |
-|:---------------------------:|:---------------------------:|---------|
-|    TWITTER_CONSUMER_KEY     |    twitter consumer key     | n/a     |
-|   TWITTER_CONSUMER_SECRET   |   twitter consumer secret   | n/a     |
-|    TWITTER_ACCESS_TOKEN     |    twitter access token     | n/a     |
-| TWITTER_ACCESS_TOKEN_SECRET | twitter access token secret | n/a     |
-|       REDDIT_USERNAME       |       reddit username       | n/a     |
-|      REDDIT_CLIENT_ID       |      reddit client id       | n/a     |
-|    REDDIT_CLIENT_SECRET     |    reddit client secret     | n/a     |
-|       REDDIT_PASSWORD       |       reddit password       | n/a     |
-|           VERSION           |     application version     | n/a     |
+| Environment variable |                    Description                    | Default |
+| :------------------: | :-----------------------------------------------: | ------- |
+|   TWITTER_USERNAME   |                 twitter username                  | n/a     |
+|   TWITTER_PASSWORD   |                 twitter password                  | n/a     |
+|   REDDIT_USERNAME    |                  reddit username                  | n/a     |
+|   REDDIT_CLIENT_ID   |                 reddit client id                  | n/a     |
+| REDDIT_CLIENT_SECRET |               reddit client secret                | n/a     |
+|   REDDIT_PASSWORD    |                  reddit password                  | n/a     |
+|    DRIVER_TIMEOUT    | time sleep for selenium to wait after each action | n/a     |
+|       VERSION        |                application version                | n/a     |
