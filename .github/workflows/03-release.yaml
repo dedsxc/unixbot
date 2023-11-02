@@ -1,0 +1,168 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+      - master
+
+env:
+  GHCR_REGISTRY: ghcr.io
+  GHCR_REGISTRY_REPO: ${{ secrets.GHCR_REPO }}
+  DOCKERFILE_PATH: Dockerfile
+
+jobs:
+  check-dockerfile:
+    runs-on: ubuntu-latest
+    outputs:
+      is_dockerfile_exist: ${{ steps.dockerfile.outputs.files_exists }}
+    steps: 
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check if Dockerfile exist
+        id: dockerfile
+        uses: andstor/file-existence-action@v2
+        with:
+          files: "Dockerfile"
+
+  stable-tag:
+    runs-on: ubuntu-latest
+    needs: [check-dockerfile]
+    if: needs.check-dockerfile.outputs.is_dockerfile_exist == 'true'
+    outputs:
+      new_tag: ${{ steps.tag_version.outputs.new_tag }}
+      new_changelog: ${{ steps.tag_version.outputs.changelog }}
+      previous_tag: ${{ steps.tag_version.outputs.previous_tag }}
+    steps:
+      - name: Bump version and push tag
+        id: tag_version
+        uses: mathieudutour/github-tag-action@v6.1
+        with:
+          github_token: ${{ secrets.CI_BOT_TOKEN }}
+          release_branches: master,main
+          # Generate specific tag for pre-release
+          pre_release_branches: "^(?!main$|master$).*$"
+          # Dont tag if the commit is not a patch, minor or major
+          default_bump: false
+          # Set tag as x.x.x
+          tag_prefix: ""
+
+  build-docker-image:
+    runs-on: ubuntu-latest
+    needs: [stable-tag]
+    # Run only if there is tag generated from previous jobs
+    if: ${{ needs.stable-tag.outputs.new_tag }}
+    steps:   
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Get repository name
+        id: get_repo_name
+        run: |
+          result=$(echo "$GITHUB_REPOSITORY" | awk -F'/' '{print $2}')
+          echo "repo_name=$result" >> $GITHUB_OUTPUT
+
+      - name: Configure Docker
+        uses: docker/login-action@v1
+        with:
+          registry: ${{ env.GHCR_REGISTRY }}
+          username: ${{ secrets.CI_BOT_USERNAME }}
+          password: ${{ secrets.CI_BOT_TOKEN }}
+      
+      - name: Build and Push Docker image
+        run: |
+          docker build -t ${{ env.GHCR_REGISTRY }}/${{ env.GHCR_REGISTRY_REPO }}/${{ steps.get_repo_name.outputs.repo_name }}:${{ needs.stable-tag.outputs.new_tag }} .
+          docker push ${{ env.GHCR_REGISTRY }}/${{ env.GHCR_REGISTRY_REPO }}/${{ steps.get_repo_name.outputs.repo_name }}:${{ needs.stable-tag.outputs.new_tag }}
+      
+      # Setup and run vulnerability scanner
+      - name: setup trivy markdown template
+        run: |
+          cat <<EOF | tee github-markdown.tpl
+            {{- if . }}
+            {{- range . }}
+            <h3>Target <code>{{ escapeXML .Target }}</code></h3>
+            {{- if (eq (len .Vulnerabilities) 0) }}
+            <h4>No Vulnerabilities found</h4>
+            {{- else }}
+            <h4>Vulnerabilities ({{ len .Vulnerabilities }})</h4>
+            <table>
+                <tr>
+                    <th>Package</th>
+                    <th>ID</th>
+                    <th>Severity</th>
+                    <th>Installed Version</th>
+                    <th>Fixed Version</th>
+                </tr>
+                {{- range .Vulnerabilities }}
+                <tr>
+                    <td><code>{{ escapeXML .PkgName }}</code></td>
+                    <td>{{ escapeXML .VulnerabilityID }}</td>
+                    <td>{{ escapeXML .Severity }}</td>
+                    <td>{{ escapeXML .InstalledVersion }}</td>
+                    <td>{{ escapeXML .FixedVersion }}</td> 
+                </tr>
+                {{- end }}
+            </table>
+            {{- end }}
+            {{- if (eq (len .Misconfigurations ) 0) }}
+            <h4>No Misconfigurations found</h4>
+            {{- else }}
+            <h4>Misconfigurations</h4>
+            <table>
+                <tr>
+                    <th>Type</th>
+                    <th>ID</th>
+                    <th>Check</th>
+                    <th>Severity</th>
+                    <th>Message</th>
+                </tr>
+                {{- range .Misconfigurations }}
+                <tr>
+                    <td>{{ escapeXML .Type }}</td>
+                    <td>{{ escapeXML .ID }}</td>
+                    <td>{{ escapeXML .Title }}</td>
+                    <td>{{ escapeXML .Severity }}</td>
+                    <td>
+                      {{ escapeXML .Message }}
+                      <br><a href={{ escapeXML .PrimaryURL | printf "%q" }}>{{ escapeXML .PrimaryURL }}</a></br>
+                    </td>
+                </tr>
+                {{- end }}
+            </table>
+            {{- end }}
+            {{- end }}
+            {{- else }}
+            <h3>Trivy Returned Empty Report</h3>
+            {{- end }}
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        id: trivy_scanner
+        with:
+          image-ref: ${{ env.GHCR_REGISTRY }}/${{ env.GHCR_REGISTRY_REPO }}/${{ steps.get_repo_name.outputs.repo_name }}:${{ needs.dev-tag.outputs.new_tag }}
+          format: template
+          template: "@github-markdown.tpl"
+          output: "trivy.md"
+          vuln-type: 'os,library'
+          severity: 'CRITICAL,HIGH'
+
+      - name: Summary report trivy
+        run: cat trivy.md >> $GITHUB_STEP_SUMMARY
+  
+  release:
+    runs-on: ubuntu-latest
+    needs: [stable-tag, build-docker-image]
+    if: needs.stable-tag.outputs.new_tag
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Create a GitHub release
+        uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ needs.stable-tag.outputs.new_tag }}
+          name: ${{ needs.stable-tag.outputs.new_tag }}
+          body: ${{ needs.stable-tag.outputs.new_changelog }}
