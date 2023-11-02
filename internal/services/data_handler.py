@@ -1,4 +1,4 @@
-from services.database import Database
+from internal.services.database import Database
 
 
 class DataHandler:
