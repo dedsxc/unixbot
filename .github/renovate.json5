@@ -1,0 +1,17 @@
+{
+  $schema: 'https://docs.renovatebot.com/renovate-schema.json',
+  extends: [
+    'config:recommended',
+    'docker:pinDigests',
+    'helpers:pinGitHubActionDigests',
+    ':pinDevDependencies'
+  ],
+  packageRules: [
+    {
+      description: 'Automerge non-major updates',
+      matchUpdateTypes: ['minor', 'patch'],
+      ignoreTests: true,
+      automerge: true
+    }
+  ]
+}

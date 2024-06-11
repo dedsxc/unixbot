@@ -24,7 +24,7 @@ class Unixporn:
 
     def post_tweet_daily(self, reddit_client: RedditScraper):
         # Create database
-        db = DataHandler(db_name="unixbot.db", table="reddit", column_name="reddit_id")
+        db = DataHandler(db_name="db/unixbot.db", table="reddit", column_name="reddit_id")
         db.create_table()
 
         while True:

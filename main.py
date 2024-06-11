@@ -14,11 +14,9 @@ class Bot:
                                            password=os.environ['REDDIT_PASSWORD'])
         self.unixporn = Unixporn()
         self.thread_post_tweet_daily = threading.Thread(target=self.unixporn.post_tweet_daily,args=(self.reddit_client,))
-        #self.thread_post_fav_tweet = threading.Thread(target=self.unixporn.post_fav_tweet,args=(self.twitter_scrapper,))
 
     def start(self):
         self.thread_post_tweet_daily.start()
-        #self.thread_post_fav_tweet.start()
 
 
 if __name__ == '__main__':
