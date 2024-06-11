@@ -11,6 +11,11 @@
       matchDatasources: ['github-tags'],
       groupName: "github-action",
       automerge: true
+    },
+    {
+      description: 'Prefix commit message for minor updates',
+      matchUpdateTypes: ['minor'],
+      commitMessagePrefix: 'feat: ',
     }
   ]
 }
