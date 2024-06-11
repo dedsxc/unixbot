@@ -2,6 +2,7 @@ import os
 import time
 from common.logger import log
 # Selenium 4
+from selenium_stealth import stealth
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service as ChromiumService
@@ -21,6 +22,15 @@ def tweet_with_media(filename, submission, comment):
     options.add_argument("--disable-gpu")
     driver = webdriver.Chrome(service=ChromiumService("/usr/bin/chromedriver"), options=options)
     driver.set_window_size("800", "1600")
+    stealth(
+            driver,
+            languages=["en-US", "en"],
+            vendor="Google Inc.",
+            platform="Win32",
+            webgl_vendor="Intel Inc.",
+            renderer="Intel Iris OpenGL Engine",
+            fix_hairline=True,
+    )
     driver.get("https://twitter.com/i/flow/login")
 
     try:
@@ -44,14 +54,14 @@ def twitter_connect_selenium(driver):
     time.sleep(10)
     driver.find_element(By.TAG_NAME, "input").send_keys(os.environ["TWITTER_USERNAME"])
     driver.save_screenshot("screenshot/login.png")
-    driver.find_elements(By.XPATH, "//div[@role='button']")[-2].click()
+    driver.find_elements(By.XPATH, "//button[@role='button']")[-3].click()
 
     # Fill password and click on "connect" button
     WebDriverWait(driver, int(os.environ["DRIVER_TIMEOUT"])).until(
         EC.presence_of_element_located((By.XPATH, "//input[@type='password']")))
     driver.find_element(By.XPATH, "//input[@type='password']").send_keys(os.environ["TWITTER_PASSWORD"])
     driver.save_screenshot("screenshot/login_password.png")
-    driver.find_element(By.XPATH, "//div[@data-testid='LoginForm_Login_Button']").click()
+    driver.find_element(By.XPATH, "//button[@data-testid='LoginForm_Login_Button']").click()
     log.info("[twitter_connect_selenium] Connect successfull")
 
 def twitter_post_media_selenium(driver, status, filename):
@@ -64,17 +74,17 @@ def twitter_post_media_selenium(driver, status, filename):
 
     # Wait for post button to be accessible
     WebDriverWait(driver, int(os.environ["DRIVER_TIMEOUT"])).until(
-        EC.presence_of_element_located((By.XPATH, "//div[@data-testid='tweetButtonInline']")))
+        EC.presence_of_element_located((By.XPATH, "//button[@data-testid='tweetButtonInline']")))
     driver.save_screenshot("screenshot/last_media_upload.png")
-    driver.find_element(By.XPATH, "//div[@data-testid='tweetButtonInline']").click()
+    driver.find_element(By.XPATH, "//button[@data-testid='tweetButtonInline']").click()
     log.info("[twitter_post_media_selenium] post media successfull")
 
 
 def twitter_post_comment(driver, comment):
     # Click on Reply button
     WebDriverWait(driver, int(os.environ["DRIVER_TIMEOUT"])).until(
-        EC.presence_of_element_located((By.XPATH, "//div[@data-testid='reply']")))
-    driver.find_elements(By.XPATH, "//div[@data-testid='reply']")[0].click()
+        EC.presence_of_element_located((By.XPATH, "//button[@data-testid='reply']")))
+    driver.find_elements(By.XPATH, "//button[@data-testid='reply']")[0].click()
 
     # Write comment
     WebDriverWait(driver, int(os.environ["DRIVER_TIMEOUT"])).until(
@@ -84,6 +94,6 @@ def twitter_post_comment(driver, comment):
 
     # Post comment
     WebDriverWait(driver, int(os.environ["DRIVER_TIMEOUT"])).until(
-        EC.presence_of_element_located((By.XPATH, "//div[@data-testid='tweetButton']")))
-    driver.find_element(By.XPATH, "//div[@data-testid='tweetButton']").click()
+        EC.presence_of_element_located((By.XPATH, "//button[@data-testid='tweetButton']")))
+    driver.find_element(By.XPATH, "//button[@data-testid='tweetButton']").click()
     log.info("[twitter_post_comment] post comment successfull")
