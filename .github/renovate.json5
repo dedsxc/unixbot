@@ -1,5 +1,4 @@
 {
-  $schema: 'https://docs.renovatebot.com/renovate-schema.json',
   extends: [
     'config:recommended',
     'docker:pinDigests',
@@ -8,10 +7,23 @@
   ],
   packageRules: [
     {
-      description: 'Automerge non-major updates',
-      matchUpdateTypes: ['minor', 'patch'],
+      description: 'Auto merge GitHub Actions',
+      matchDatasources: ['github-tags'],
+      automerge: true,
       ignoreTests: true,
-      automerge: true
-    }
+      matchUpdateTypes: ['minor','patch'],
+    },
+    {
+      description: 'Group docker dep',
+      groupName: 'docker',
+      matchDatasources: ['docker'],
+      labels: ['docker']
+    },
+    {
+      description: 'Group python dep',
+      groupName: 'python',
+      matchDatasources: ['pypi'],
+      labels: ['python']
+    },
   ]
 }

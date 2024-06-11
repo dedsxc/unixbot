@@ -42,7 +42,7 @@ jobs:
           # Dont tag if the commit is not a patch, minor or major
           default_bump: false
           # Set tag as x.x.x
-          tag_prefix: "${{ github.event.pull_request.number }}-dev-"
+          tag_prefix: "pr-${{ github.event.pull_request.number }}-"
           dry_run: true
 
 
