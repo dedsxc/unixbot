@@ -37,7 +37,7 @@ jobs:
     steps:
       - name: Bump version and push tag
         id: tag_version
-        uses: mathieudutour/github-tag-action@v6.1
+        uses: mathieudutour/github-tag-action@a22cf08638b34d5badda920f9daf6e72c477b07b # v6.2
         with:
           github_token: ${{ secrets.CI_BOT_TOKEN }}
           release_branches: master,main
@@ -55,7 +55,7 @@ jobs:
     if: ${{ needs.stable-tag.outputs.new_tag }}
     steps:   
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4
 
       - name: Get repository name
         id: get_repo_name
@@ -81,7 +81,7 @@ jobs:
     if: needs.stable-tag.outputs.new_tag
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4
         with:
           fetch-depth: 0
 
