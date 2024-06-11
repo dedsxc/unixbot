@@ -8,9 +8,9 @@
   ],
   packageRules: [
     {
-      description: 'Automerge non-major updates',
-      matchUpdateTypes: ['minor', 'patch'],
-      ignoreTests: true,
+      description: 'Automerge patch updates',
+      matchUpdateTypes: ['patch'],
+      commitMessagePrefix: 'fix: ',
       automerge: true
     }
   ]
