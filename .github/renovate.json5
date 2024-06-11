@@ -12,18 +12,6 @@
       automerge: true,
       ignoreTests: true,
       matchUpdateTypes: ['minor','patch'],
-    },
-    {
-      description: 'Group docker dep',
-      groupName: 'docker',
-      matchDatasources: ['docker'],
-      labels: ['docker']
-    },
-    {
-      description: 'Group python dep',
-      groupName: 'python',
-      matchDatasources: ['pypi'],
-      labels: ['python']
-    },
+    }
   ]
 }
