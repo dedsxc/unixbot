@@ -33,7 +33,7 @@ jobs:
     steps:
       - name: Create tmp dev-tag for docker image
         id: tag_version
-        uses: mathieudutour/github-tag-action@v6.1
+        uses: mathieudutour/github-tag-action@a22cf08638b34d5badda920f9daf6e72c477b07b # v6.2
         with:
           github_token: ${{ secrets.CI_BOT_TOKEN }}
           release_branches: master,main
