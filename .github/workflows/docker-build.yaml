@@ -33,7 +33,7 @@ jobs:
     steps:
       - name: Create tmp dev-tag for docker image
         id: tag_version
-        uses: mathieudutour/github-tag-action@v6.1
+        uses: mathieudutour/github-tag-action@a22cf08638b34d5badda920f9daf6e72c477b07b # v6.2
         with:
           github_token: ${{ secrets.CI_BOT_TOKEN }}
           release_branches: master,main
@@ -42,7 +42,7 @@ jobs:
           # Dont tag if the commit is not a patch, minor or major
           default_bump: false
           # Set tag as x.x.x
-          tag_prefix: "${{ github.event.pull_request.number }}-dev-"
+          tag_prefix: "pr-${{ github.event.pull_request.number }}-"
           dry_run: true
 
 
@@ -53,7 +53,7 @@ jobs:
     if: ${{ needs.dev-tag.outputs.new_tag }}  
     steps:   
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4
 
       - name: Get repository name
         id: get_repo_name
@@ -150,10 +150,17 @@ jobs:
 
       - name: Summary report trivy
         run: cat trivy.md >> $GITHUB_STEP_SUMMARY
-    
+      
+      - name: Generate Token
+        uses: actions/create-github-app-token@c8f55efbd427e7465d6da1106e7979bc8aaee856 # v1
+        id: app-token
+        with:
+          app-id: "${{ secrets.BOT_APP_ID }}"
+          private-key: "${{ secrets.BOT_APP_PRIV_KEY }}"
+
       - name: Push trivy comment on PR
         uses: peter-evans/create-or-update-comment@v3
         with:
           issue-number: ${{ github.event.pull_request.number }}
           body-path: 'trivy.md'
-          token: ${{ secrets.CI_BOT_TOKEN }}
+          token: ${{ steps.app-token.outputs.token }}
