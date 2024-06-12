@@ -15,11 +15,11 @@ jobs:
       is_dockerfile_exist: ${{ steps.dockerfile.outputs.files_exists }}
     steps: 
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4
 
       - name: Check if Dockerfile exist
         id: dockerfile
-        uses: andstor/file-existence-action@v2
+        uses: andstor/file-existence-action@20b4d2e596410855db8f9ca21e96fbe18e12930b # v2
         with:
           files: "Dockerfile"
 
@@ -53,7 +53,7 @@ jobs:
     if: ${{ needs.dev-tag.outputs.new_tag }}  
     steps:   
       - name: Checkout code
-        uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4
+        uses: actions/checkout@v3
 
       - name: Get repository name
         id: get_repo_name
@@ -62,10 +62,10 @@ jobs:
           echo "repo_name=$result" >> $GITHUB_OUTPUT
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@d70bba72b1f3fd22344832f00baa16ece964efeb # v3
+        uses: docker/setup-buildx-action@v2
 
       - name: Configure Docker
-        uses: docker/login-action@v1
+        uses: docker/login-action@dd4fa0671be5250ee6f50aedf4cb05514abda2c7 # v1
         with:
           registry: ${{ env.GHCR_REGISTRY }}
           username: ${{ secrets.CI_BOT_USERNAME }}
@@ -158,7 +158,7 @@ jobs:
           private-key: "${{ secrets.BOT_APP_PRIV_KEY }}"
 
       - name: Push trivy comment on PR
-        uses: peter-evans/create-or-update-comment@v3
+        uses: peter-evans/create-or-update-comment@23ff15729ef2fc348714a3bb66d2f655ca9066f2 # v3
         with:
           issue-number: ${{ github.event.pull_request.number }}
           body-path: 'trivy.md'
