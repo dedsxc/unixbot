@@ -53,7 +53,7 @@ jobs:
     if: ${{ needs.dev-tag.outputs.new_tag }}  
     steps:   
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3
 
       - name: Get repository name
         id: get_repo_name
@@ -62,7 +62,7 @@ jobs:
           echo "repo_name=$result" >> $GITHUB_OUTPUT
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@885d1462b80bc1c1c7f0b00334ad271f09369c55 # v2
 
       - name: Configure Docker
         uses: docker/login-action@dd4fa0671be5250ee6f50aedf4cb05514abda2c7 # v1
