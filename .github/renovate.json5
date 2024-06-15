@@ -9,9 +9,8 @@
     {
       description: 'Auto merge GitHub Actions',
       matchDatasources: ['github-tags'],
-      automerge: true,
-      ignoreTests: true,
-      matchUpdateTypes: ['minor','patch'],
+      groupName: "github-action",
+      automerge: true
     }
   ]
 }
