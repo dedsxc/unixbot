@@ -1,3 +1,3 @@
 praw==7.7.1
-selenium==4.20.0
+selenium==4.22.0
 selenium-stealth==1.0.6
