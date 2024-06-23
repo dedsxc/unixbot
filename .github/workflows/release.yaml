@@ -35,5 +35,5 @@ jobs:
       
       - name: Build and Push Docker image
         run: |
-          docker buildx build --push --platform linux/arm64,linux/amd64 -t ${{ env.GHCR_REGISTRY }}/${{ env.GHCR_REGISTRY_REPO }}/${{ steps.get_repo_name.outputs.repo_name }}:${{ needs.stable-tag.outputs.new_tag }} .
+          docker buildx build --push --platform linux/arm64,linux/amd64 -t ${{ env.GHCR_REGISTRY }}/${{ env.GHCR_REGISTRY_REPO }}/${{ steps.get_repo_name.outputs.repo_name }}:${{ github.ref_name }} .
   
