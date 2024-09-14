@@ -1,3 +1,4 @@
 praw==7.7.1
 selenium==4.22.0
 selenium-stealth==1.0.6
+redis==5.0.8

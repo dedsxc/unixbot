@@ -19,4 +19,4 @@ Download Chrome-driver : https://github.com/electron/electron/releases
 | REDDIT_CLIENT_SECRET |               reddit client secret                | n/a     |
 |   REDDIT_PASSWORD    |                  reddit password                  | n/a     |
 |    DRIVER_TIMEOUT    | time sleep for selenium to wait after each action | n/a     |
-|       VERSION        |                application version                | n/a     |
+|       REDIS_HOST        |                redis host                | n/a     |
