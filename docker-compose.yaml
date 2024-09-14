@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6379:6379"
+  unixbot:
+    image: unixbot
+    container_name: unixbot
+    environment:
+      - REDIS_HOST=redis
+      - TWITTER_USERNAME=bot_unixporn
+      - TWITTER_PASSWORD=strongPassword
+      - REDDIT_USERNAME=bot_unixporn
+      - REDDIT_PASSWORD=strongPassword
+      - REDDIT_CLIENT_ID=client_id
+      - REDDIT_CLIENT_SECRET=client_secret
+    depends_on:
+      - redis

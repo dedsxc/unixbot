@@ -5,7 +5,7 @@ import urllib.request
 from internal.api.interact_browser import tweet_with_media
 from internal.api.reddit import RedditScraper
 from common.logger import log
-from internal.services.data_handler import DataHandler
+from internal.services.redis import RedisDataManager
 from common import directory
 
 
@@ -16,23 +16,21 @@ class Unixporn:
         self.screenshot_directory = os.path.join(self.cwd_path, 'screenshot')
         self.delay_post_tweet_daily = 300
         self.delay_post_top_tweet = 3600
-        self.app_version = os.environ["VERSION"]
         self.emoji = ["🦦", "🚀", "👍", "📥", "🆕", "⚡︎", "😱", "😳", "🧙", "🦊", "🔥", "🥇", "🎖️", "🏅"]
         self.allowed_media_extension = ["jpg", "jpeg", "png", "mp4", "gif"]
         directory.exist(self.media_directory)
         directory.exist(self.screenshot_directory)
 
     def post_tweet_daily(self, reddit_client: RedditScraper):
-        # Create database
-        db = DataHandler(db_name="db/unixbot.db", table="reddit", column_name="reddit_id")
-        db.create_table()
+        # Connect to redis database
+        db = RedisDataManager(host=os.environ["REDIS_HOST"])
 
         while True:
             # Get last post from Reddit r/unixporn
             submission = reddit_client.get_latest_post()
 
             try:
-                if not db.check_data_exist(data=submission.id):
+                if not db.check_data_exist(submission.id):
                     log.info('[post_tweet_daily] New post title: {}'.format(submission.title))
                     # Get comment on last post from Reddit
                     comment = reddit_client.get_config_comment_on_post(submission.id)
