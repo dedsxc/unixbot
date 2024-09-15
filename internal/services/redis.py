@@ -20,7 +20,6 @@ class RedisDataManager:
     def check_data_exist(self, value):
         try:
             if self.conn.sismember(self.key, value):
-                log.info(f"Post ID {value} exists in Redis")
                 return True
             else:
                 return False

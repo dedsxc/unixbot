@@ -31,6 +31,9 @@ class Unixporn:
 
             try:
                 if not db.check_data_exist(submission.id):
+                    # Insert submission_id on database
+                    db.insert_data(submission.id)
+                    
                     log.info('[post_tweet_daily] New post title: {}'.format(submission.title))
                     # Get comment on last post from Reddit
                     comment = reddit_client.get_config_comment_on_post(submission.id)
@@ -55,8 +58,6 @@ class Unixporn:
                         log.warning("[post_tweet_daily] no media found: {}".format(submission.url))
                         log.warning("[post_tweet_daily] url post: {}".format(submission.shortlink))
 
-                    # Insert submission_id on database
-                    db.insert_data(submission.id)
             except Exception as e:
                 log.error("[post_tweet_daily] Error while posting tweet: {}".format(e))
 
