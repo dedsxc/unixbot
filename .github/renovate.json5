@@ -1,10 +1,7 @@
 {
-  extends: [
-    'config:recommended',
-    'docker:pinDigests',
-    'helpers:pinGitHubActionDigests',
-    ':pinDevDependencies'
-  ],
+  extends: ['config:recommended','docker:pinDigests','helpers:pinGitHubActionDigests',':pinDevDependencies'],
+  automergeType: 'branch',
+  labels: ['renovate'],
   packageRules: [
     {
       description: 'Auto merge GitHub Actions',
