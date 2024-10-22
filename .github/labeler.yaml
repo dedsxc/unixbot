@@ -1,0 +1,5 @@
+github-actions:
+  - ".github/**"
+docker:
+  - "Dockerfile"
+  - "docker-compose.yaml"

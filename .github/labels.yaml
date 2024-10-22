@@ -1,0 +1,6 @@
+- name: docker
+  color: "7bd3ea"
+- name: github-actions
+  color: "7bd3ea"
+- name: renovate
+  color: "a1eebd"
