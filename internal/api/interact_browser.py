@@ -11,7 +11,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 
 
-def tweet_with_media(filename, submission, comment):
+def tweet_with_media(filename, title, link, comment):
     # Tweet status with media
     options = Options()
     options.add_argument("--incognito")
@@ -35,7 +35,7 @@ def tweet_with_media(filename, submission, comment):
 
     try:
         twitter_connect_selenium(driver)
-        status = f'{submission.title}\nLink: {submission.shortlink}\n\nBuy me a coffee ☕️: https://www.buymeacoffee.com/bot_unixporn'
+        status = f'{title}\nLink: {link}\n\nBuy me a coffee ☕️: https://www.buymeacoffee.com/bot_unixporn'
         twitter_post_media_selenium(driver, status, filename)
         # waiting to upload media
         time.sleep(10)
