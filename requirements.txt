@@ -2,4 +2,4 @@ praw==7.8.1
 selenium==4.25.0
 selenium-stealth==1.0.6
 redis==5.1.1
-requests==2.32.3
+requests==2.32.4
