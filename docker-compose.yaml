@@ -12,10 +12,13 @@ services:
     environment:
       - REDIS_HOST=redis
       - TWITTER_USERNAME=bot_unixporn
-      - TWITTER_PASSWORD=strongPassword
-      - REDDIT_USERNAME=bot_unixporn
-      - REDDIT_PASSWORD=strongPassword
-      - REDDIT_CLIENT_ID=client_id
-      - REDDIT_CLIENT_SECRET=client_secret
+      - TWITTER_PASSWORD=AnsYTB%VA&QC8#E@UZEp
+      - REDDIT_USERNAME=xShd0wX
+      - REDDIT_PASSWORD=ciDmT8NN7PBHc9Lx7eBa
+      - REDDIT_CLIENT_ID=NzIcriEocSFZHg
+      - REDDIT_CLIENT_SECRET=AbQRGIUlx3arUQKnbv4tDOb_8NM
+      - DRIVER_TIMEOUT=60
+    volumes:
+      - ./_tmp:/app/screenshot
     depends_on:
       - redis
