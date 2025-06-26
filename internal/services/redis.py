@@ -13,7 +13,7 @@ class RedisDataManager:
     def insert_data(self, value):
         try:
             self.conn.sadd(self.key, value)
-            log.info(f"Inserted {value} into {self.key}")
+            log.info(f"[redis] Inserted {value} into {self.key}")
         except redis.RedisError as e:
             log.error(f"Error inserting data into Redis: {e}")
 

@@ -72,9 +72,12 @@ def twitter_post_media_selenium(driver, status, filename):
     driver.find_element(By.XPATH, "//input[@data-testid='fileInput']").send_keys(filename)
     driver.save_screenshot("screenshot/status_post.png")
 
-    # Wait for post button to be accessible
+    # Wait for media to be uploaded
+    time.sleep(5) 
+     
+    # Wait for post button to be accessible with aria-disabled="false"
     WebDriverWait(driver, int(os.environ["DRIVER_TIMEOUT"])).until(
-        EC.presence_of_element_located((By.XPATH, "//button[@data-testid='tweetButtonInline']")))
+        lambda d: d.find_element(By.XPATH, "//button[@data-testid='tweetButtonInline']").get_attribute("aria-disabled") != "true")
     driver.save_screenshot("screenshot/last_media_upload.png")
     driver.find_element(By.XPATH, "//button[@data-testid='tweetButtonInline']").click()
     log.info("[twitter_post_media_selenium] post media successfull")
