@@ -68,7 +68,6 @@ class Unixporn:
                     db.insert_data(lemmy_post['id'])
                     
                     log.info('[post_tweet_daily] New Lemmy post title: {}'.format(lemmy_post['name']))
-                    comment = lemmy_post['body']
                     
                     if lemmy_post['url'].split(".")[-1] in self.allowed_media_extension:
                         lemmy_media_path = self.media_directory + "/" + lemmy_post['url'].split("/")[-1]
