@@ -46,9 +46,10 @@ class Unixporn:
 
                     # check if submission content is a video
                     if submission.is_video:
-                        filename = submission.media['reddit_video']['fallback_url'].split("/")[-1].split("?")[0]
-                        self.download_media(submission.media['reddit_video']['fallback_url'], filename)
-                        tweet_with_media(self.cwd_path + "/" + reddit_media_path, submission.title, submission.shortlink, comment)
+                        filename = submission.media['reddit_video']['fallback_url'].split("/")[-2] + ".mp4"
+                        reddit_media_path = self.media_directory + "/" + filename
+                        self.download_media(submission.media['reddit_video']['fallback_url'], reddit_media_path)
+                        tweet_with_media(reddit_media_path, submission.title, submission.shortlink, comment)
                         os.remove(reddit_media_path)
 
                     elif submission.url.split(".")[-1] in self.allowed_media_extension:
