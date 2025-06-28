@@ -57,6 +57,24 @@ class Unixporn:
                         self.download_media(submission.url, reddit_media_path)
                         tweet_with_media(reddit_media_path, submission.title, submission.shortlink, comment)
                         os.remove(reddit_media_path)
+                    
+                    elif hasattr(submission, "is_gallery") and submission.is_gallery:
+                        media_metadata = getattr(submission, "media_metadata", {})
+                        if media_metadata:
+                            medias_path = []
+                            for media_id, media_info in media_metadata.items():
+                                media_url = media_info["s"]["u"].replace("&amp;", "&")
+                                file_ext = media_url.split(".")[-1].split("?")[0]
+                                reddit_media_path = os.path.join(self.media_directory, f"{media_id}.{file_ext}")
+                                self.download_media(media_url, reddit_media_path)
+                                medias_path.append(reddit_media_path)
+                            # Post tweet with all media files
+                            tweet_with_media(medias_path, submission.title, submission.shortlink, comment)
+                            # Remove downloaded media files
+                            for media_path in medias_path:
+                                os.remove(media_path)
+                        else:
+                            log.warning("[post_tweet_daily] No media metadata found for gallery post.")
 
                     else:
                         log.warning("[post_tweet_daily] no media found: {}".format(submission.url))

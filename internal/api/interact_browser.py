@@ -69,7 +69,11 @@ def twitter_post_media_selenium(driver, status, filename):
     WebDriverWait(driver, int(os.environ["DRIVER_TIMEOUT"])).until(
         EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'public-DraftStyleDefault-block')]")))
     driver.find_element(By.XPATH, "//div[contains(@class, 'public-DraftStyleDefault-block')]").send_keys(status)
-    driver.find_element(By.XPATH, "//input[@data-testid='fileInput']").send_keys(filename)
+    if isinstance(filename, (list, tuple)):
+        files = "\n".join(filename)
+        driver.find_element(By.XPATH, "//input[@data-testid='fileInput']").send_keys(files)
+    else:
+        driver.find_element(By.XPATH, "//input[@data-testid='fileInput']").send_keys(filename)
     driver.save_screenshot("screenshot/status_post.png")
 
     # Wait for media to be uploaded
