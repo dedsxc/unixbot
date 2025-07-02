@@ -6,7 +6,7 @@ WORKDIR /app
 COPY . /app
 
 # Install chromium
-RUN apk update && apk add --no-cache chromium=112.0.5615.165-r0 chromium-chromedriver=112.0.5615.165-r0
+RUN apk update && apk add --no-cache tini chromium=112.0.5615.165-r0 chromium-chromedriver=112.0.5615.165-r0
 
 # Install python package
 RUN python3 -m pip install --no-cache-dir -r requirements.txt 
@@ -17,4 +17,4 @@ RUN adduser -D -H -u 1000 $USER && \
 
 USER $USER
 
-ENTRYPOINT ["python", "main.py"]
+ENTRYPOINT ["tini", "--", "python", "main.py"]
