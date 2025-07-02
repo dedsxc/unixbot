@@ -46,6 +46,7 @@ def tweet_with_media(filename, title, link, comment):
     except Exception as e:
         driver.save_screenshot("screenshot/error.png")
         log.error("[twitter_connect_selenium] Error while connect in twitter with selenium: {}".format(e))
+    finally:
         driver.quit()
 
 
