@@ -4,10 +4,10 @@ class LemmyScraper:
     def __init__(self):
         self.base_url = 'https://lemmy.world/api/v3'
         
-    def get_latest_posts(self, limit=1, sort='New'):
+    def get_latest_posts(self, limit=1, sort='New', community_name='unixporn'):
         url = self.base_url + '/post/list'
         params = {
-            'community_name': 'unixporn',
+            'community_name': community_name,
             'limit': limit,
             'sort': sort
         }

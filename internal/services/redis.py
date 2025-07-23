@@ -7,8 +7,10 @@ class RedisDataManager:
         self.key = "submission_ids"
         try:
             self.conn = redis.Redis(host=host, port=6379, db=0)
+            self.conn.ping()
         except redis.ConnectionError as e:
             log.error(f"Failed to connect to Redis: {e}")
+            exit(1)
 
     def insert_data(self, value):
         try:
