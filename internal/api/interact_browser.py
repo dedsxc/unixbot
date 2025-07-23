@@ -1,6 +1,10 @@
 import os
 import time
+
+# Common
+from internal.config import config
 from common.logger import log
+
 # Selenium 4
 from selenium_stealth import stealth
 from selenium import webdriver
@@ -53,21 +57,21 @@ def tweet_with_media(filename, title, link, comment):
 def twitter_connect_selenium(driver):
     # Fill username and click on "next" button
     time.sleep(10)
-    driver.find_element(By.TAG_NAME, "input").send_keys(os.environ["TWITTER_USERNAME"])
+    driver.find_element(By.TAG_NAME, "input").send_keys(config.get('twitter', 'username'))
     driver.save_screenshot("screenshot/login.png")
     driver.find_elements(By.XPATH, "//button[@role='button']")[-3].click()
 
     # Fill password and click on "connect" button
-    WebDriverWait(driver, int(os.environ["DRIVER_TIMEOUT"])).until(
+    WebDriverWait(driver, int(config.getint('global', 'selenium_timeout'))).until(
         EC.presence_of_element_located((By.XPATH, "//input[@type='password']")))
-    driver.find_element(By.XPATH, "//input[@type='password']").send_keys(os.environ["TWITTER_PASSWORD"])
+    driver.find_element(By.XPATH, "//input[@type='password']").send_keys(config.get('twitter', 'password'))
     driver.save_screenshot("screenshot/login_password.png")
     driver.find_element(By.XPATH, "//button[@data-testid='LoginForm_Login_Button']").click()
     log.info("[twitter_connect_selenium] Connect successfull")
 
 def twitter_post_media_selenium(driver, status, filename):
     # Wait for block to write comment
-    WebDriverWait(driver, int(os.environ["DRIVER_TIMEOUT"])).until(
+    WebDriverWait(driver, int(config.getint('global', 'selenium_timeout'))).until(
         EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'public-DraftStyleDefault-block')]")))
     driver.find_element(By.XPATH, "//div[contains(@class, 'public-DraftStyleDefault-block')]").send_keys(status)
     if isinstance(filename, (list, tuple)):
@@ -78,10 +82,10 @@ def twitter_post_media_selenium(driver, status, filename):
     driver.save_screenshot("screenshot/status_post.png")
 
     # Wait for media to be uploaded
-    time.sleep(5) 
+    time.sleep(config.getint('global', 'selenium_timeout')) 
      
     # Wait for post button to be accessible with aria-disabled="false"
-    WebDriverWait(driver, int(os.environ["DRIVER_TIMEOUT"])).until(
+    WebDriverWait(driver, int(config.getint('global', 'selenium_timeout'))).until(
         lambda d: d.find_element(By.XPATH, "//button[@data-testid='tweetButtonInline']").get_attribute("aria-disabled") != "true")
     driver.save_screenshot("screenshot/last_media_upload.png")
     driver.find_element(By.XPATH, "//button[@data-testid='tweetButtonInline']").click()
@@ -90,18 +94,18 @@ def twitter_post_media_selenium(driver, status, filename):
 
 def twitter_post_comment(driver, comment):
     # Click on Reply button
-    WebDriverWait(driver, int(os.environ["DRIVER_TIMEOUT"])).until(
+    WebDriverWait(driver, int(config.getint('global', 'selenium_timeout'))).until(
         EC.presence_of_element_located((By.XPATH, "//button[@data-testid='reply']")))
     driver.find_elements(By.XPATH, "//button[@data-testid='reply']")[0].click()
 
     # Write comment
-    WebDriverWait(driver, int(os.environ["DRIVER_TIMEOUT"])).until(
+    WebDriverWait(driver, int(config.getint('global', 'selenium_timeout'))).until(
         EC.presence_of_element_located((By.XPATH, "//div[@data-testid='tweetTextarea_0']")))
     driver.find_element(By.XPATH, "//div[@data-testid='tweetTextarea_0']").send_keys(comment)
     driver.save_screenshot("screenshot/last_comment_upload.png")
 
     # Post comment
-    WebDriverWait(driver, int(os.environ["DRIVER_TIMEOUT"])).until(
+    WebDriverWait(driver, int(config.getint('global', 'selenium_timeout'))).until(
         EC.presence_of_element_located((By.XPATH, "//button[@data-testid='tweetButton']")))
     driver.find_element(By.XPATH, "//button[@data-testid='tweetButton']").click()
     log.info("[twitter_post_comment] post comment successfull")

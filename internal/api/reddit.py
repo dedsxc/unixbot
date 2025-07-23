@@ -4,12 +4,13 @@ from common.logger import log
 
 
 class RedditScraper:
-    def __init__(self, user_agent, client_id, client_secret, username, password):
+    def __init__(self, user_agent, client_id, client_secret, username, password, flair_list=None):
         self.user_agent = user_agent
         self.client_id = client_id
         self.client_secret = client_secret
         self.username = username
         self.password = password
+        self.flair_list = flair_list or []
         self.client = praw.Reddit(
             user_agent=self.user_agent,
             client_id=self.client_id,
@@ -20,10 +21,13 @@ class RedditScraper:
         log.info("[praw] version {}".format(praw.__version__))
         log.info('[authentication][reddit] Connected as {}'.format(self.client.user.me()))
 
-    def get_latest_post(self):
+    def get_latest_post(self, reddit_submission: str):
         try:
-            subreddit = self.client.subreddit('unixporn').new(limit=1)
-            return next(subreddit)
+            subreddit = self.client.subreddit(reddit_submission).new(limit=10)
+            for submission in subreddit:
+                if submission.link_flair_text.lower() in [f.lower() for f in self.flair_list]:
+                    return submission
+            return None
         except Exception as e:
             log.error("[get_latest_post] Error while getting latest post on reddit: {}".format(e))
 
