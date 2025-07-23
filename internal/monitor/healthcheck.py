@@ -11,6 +11,10 @@ class HealthHandler(BaseHTTPRequestHandler):
         else:
             self.send_response(404)
             self.end_headers()
+    
+    def log_message(self, format, *args):
+        # Suppress default logging
+        return
 
 def start_health_server(port=8000):
     server = HTTPServer(("0.0.0.0", port), HealthHandler)

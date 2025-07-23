@@ -57,7 +57,7 @@ class RedditBot:
                                 download_media(media_url, reddit_media_path)
                                 medias_path.append(reddit_media_path)
                             # Post tweet with all media files
-                            tweet_with_media(medias_path, submission.title, submission.shortlink, comment)
+                            tweet_with_media(medias_path, submission.title, submission.shortlink, None)
                             # Remove downloaded media files
                             for media_path in medias_path:
                                 os.remove(media_path)
