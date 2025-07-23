@@ -1,5 +1,7 @@
 import requests
 
+from common.logger import log
+
 class LemmyScraper:
     def __init__(self):
         self.base_url = 'https://lemmy.world/api/v3'
@@ -19,5 +21,5 @@ class LemmyScraper:
             return posts[0]['post']
 
         except requests.RequestException as e:
-            print(f"[get_latest_posts] Error fetching posts: {e}")
+            log.info(f"[get_latest_posts] Error fetching posts: {e}")
             return None

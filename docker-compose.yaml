@@ -8,6 +8,8 @@ services:
       - "6379:6379"
   unixbot:
     image: unixbot
+    ports:
+      - "8000:8000"
     container_name: unixbot
     volumes:
       - ./config.ini:/app/config.ini
