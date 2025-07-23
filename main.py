@@ -14,8 +14,14 @@ from internal.api.reddit import RedditScraper
 from internal.bot.reddit import RedditBot
 from internal.bot.lemmy import LemmyBot
 
+# HTTP Server
+from internal.monitor.healthcheck import start_health_server
+
 
 def main():
+    # Start health check server
+    start_health_server(port=config.getint('global', 'http_port', fallback=8000))
+    
     media_directory = os.path.join(os.getcwd(), 'medias')
     screenshot_directory = os.path.join(os.getcwd(), 'screenshot')
     dir_exist(media_directory)
