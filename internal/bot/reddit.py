@@ -50,12 +50,16 @@ class RedditBot:
                         media_metadata = getattr(submission, "media_metadata", {})
                         if media_metadata:
                             medias_path = []
-                            for media_id, media_info in media_metadata.items():
+                            for idx, (media_id, media_info) in enumerate(media_metadata.items()):
+                                # Limit to 4 media items
+                                if idx >= 4:
+                                    break
                                 media_url = media_info["s"]["u"].replace("&amp;", "&")
                                 file_ext = media_url.split(".")[-1].split("?")[0]
                                 reddit_media_path = os.path.join(self.media_directory, f"{media_id}.{file_ext}")
                                 download_media(media_url, reddit_media_path)
                                 medias_path.append(reddit_media_path)
+                                    
                             # Post tweet with all media files
                             tweet_with_media(medias_path, submission.title, submission.shortlink, None)
                             # Remove downloaded media files
