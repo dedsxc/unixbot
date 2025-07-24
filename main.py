@@ -28,8 +28,12 @@ def main():
     dir_exist(screenshot_directory)
     
     # Initialize Redis Data Manager
-    db = RedisDataManager(host=config.get('redis', 'host'))
-    
+    try:
+        db = RedisDataManager(host=config.get('redis', 'host'))
+    except Exception as e:
+        log.error(f"[main] Error initializing Redis Data Manager: {e}")
+        return
+
     # Start bots based on configuration
     if config.getboolean('lemmy', 'enabled'):
         thread_run_lemmy_bot = threading.Thread(target=LemmyBot().run, args=(db, config.get('lemmy', 'community_name')))

@@ -10,7 +10,7 @@ class RedisDataManager:
             self.conn.ping()
         except redis.ConnectionError as e:
             log.error(f"Failed to connect to Redis: {e}")
-            exit(1)
+            raise
 
     def insert_data(self, value):
         try:
@@ -18,6 +18,7 @@ class RedisDataManager:
             log.info(f"[redis] Inserted {value} into {self.key}")
         except redis.RedisError as e:
             log.error(f"Error inserting data into Redis: {e}")
+            raise
 
     def check_data_exist(self, value):
         try:
@@ -27,4 +28,4 @@ class RedisDataManager:
                 return False
         except redis.RedisError as e:
             log.error(f"Error checking data in Redis: {e}")
-            return False
+            raise
