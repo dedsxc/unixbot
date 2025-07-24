@@ -39,7 +39,7 @@ def tweet_with_media(filename, title, link, comment):
 
     try:
         twitter_connect_selenium(driver)
-        status = f'{title}\nLink: {link}\n\nBuy me a coffee ☕️: https://www.buymeacoffee.com/bot_unixporn'
+        status = f'{title}\nLink: {link}\n\n{" ".join(f"#{hashtag.strip()}" for hashtag in config.get("twitter", "hashtag_list").split(",") if hashtag.strip())}\n\n{config.get("twitter", "footer_text")}'
         twitter_post_media_selenium(driver, status, filename)
         # waiting to upload media
         time.sleep(10)
