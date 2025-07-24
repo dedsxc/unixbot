@@ -24,8 +24,9 @@ class RedditScraper:
     def get_latest_post(self, reddit_submission: str):
         try:
             subreddit = self.client.subreddit(reddit_submission).new(limit=10)
+            normalized_flair_list = [f.lower().strip() for f in self.flair_list]
             for submission in subreddit:
-                if submission.link_flair_text.lower() in [f.lower() for f in self.flair_list]:
+                if submission.link_flair_text and submission.link_flair_text.lower() in normalized_flair_list:
                     return submission
             return None
         except Exception as e:
